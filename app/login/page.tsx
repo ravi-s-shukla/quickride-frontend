@@ -107,10 +107,10 @@ export default function LoginPage() {
       });
       const result = await response.json();
       if (response.status === 200) {
-        localStorage.setItem(`${role}details`, JSON.stringify(result.data));
         resetForm();
         toast.success("Login successful!");
-        router.push(`/${role}`);
+        const urlRole = role==="rider"? "ride" : "drive";
+        router.push(`/${urlRole}`);
       } else {
         toast.error(result.message || "Login failed. Please try again.");
       }

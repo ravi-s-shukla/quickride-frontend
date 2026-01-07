@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Car, User, Eye, EyeOff } from "lucide-react";
-import InputField from "../../component/input-field";
+import InputField from "../../component/InputField";
 import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -17,14 +17,14 @@ interface FormData {
   plateNumber?: string;
 }
 
-interface RiderPayload {
+export interface RiderPayload {
   name: string;
   email: string;
   phone: string;
   password: string;
 }
 
-interface CaptainPayload extends RiderPayload {
+export interface CaptainPayload extends RiderPayload {
   vehicle: {
     model: string;
     plateNumber: string;
@@ -119,11 +119,14 @@ export default function SignupPage() {
     e.preventDefault();
     if (!validateForm()) return;
     const response = await apiCall();
-    if (response.status === 201) {
+    console.log(response);
+    if (response.statusCode === 201) {
       toast.success("Account created successfully! Please log in.");
       router.push(`/login?role=${role}`);
       resetForm();
-    };
+    } else {
+      toast.error(response.message || "Something went wrong, please try again.");
+    }
   }
 
   const apiCall = async () => {
@@ -156,8 +159,7 @@ export default function SignupPage() {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
-      return data;
+      return await response.json();
     } catch (error) {
       toast.error("Something went wrong, please try again.");
       console.error("API Error:", error);
